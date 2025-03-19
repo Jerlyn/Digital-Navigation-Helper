@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Digital Navigation Helper</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-blue: #0039B7;
+            --primary-yellow: #D1FF00;
+            --dark-text: #222222;
+            --light-text: #FFFFFF;
+            --focus-outline: 3px solid var(--primary-yellow);
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: var(--dark-text);
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background-color: var(--primary-blue);
+            color: var(--light-text);
+            padding: 1rem;
+            text-align: center;
+            border-bottom: 6px solid var(--primary-yellow);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header h1 {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            position: relative;
+            z-index: 2;
+        }
+        
+        header p {
+            font-size: 1.1rem;
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+        
+        .intro {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .card:hover, .card:focus-within {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 6px;
+            height: 100%;
+            background-color: var(--primary-blue);
+        }
+        
+        .card h2 {
+            color: var(--primary-blue);
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+        }
+        
+        .card-icon {
+            color: var(--primary-blue);
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            text-align: center;
+            opacity: 0.8;
+        }
+        
+        .tip-list {
+            list-style-position: inside;
+            padding-left: 1rem;
+        }
+        
+        .tip-list li {
+            margin-bottom: 0.7rem;
+        }
+        
+        button, .btn {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.3s;
+            display: inline-block;
+            text-decoration: none;
+        }
+        
+        button:hover, .btn:hover {
+            background-color: #002980;
+        }
+        
+        /* Active state with improved contrast */
+        button:active, .btn:active, button.active, .btn.active {
+            background-color: var(--primary-yellow);
+            color: var(--primary-blue);
+            font-weight: bold;
+            box-shadow: 0 0 0 2px var(--primary-blue);
+        }
+        
+        button:focus, .btn:focus, a:focus {
+            outline: var(--focus-outline);
+            outline-offset: 2px;
+        }
+        
+        .tip-demo {
+            background-color: #f8f8f8;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            padding: 1rem;
+            margin: 1rem 0;
+        }
+        
+        .focus-indicator {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            margin: 0.5rem;
+            border: 2px solid #ccc;
+            background-color: white;
+            color: var(--dark-text);
+            transition: all 0.3s;
+        }
+        
+        .focus-indicator:focus {
+            outline: none;
+            background-color: white;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            box-shadow: 0 0 0 2px var(--primary-yellow);
+            font-weight: bold;
+        }
+        
+        footer {
+            background-color: var(--primary-blue);
+            color: white;
+            text-align: center;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            border-top: 6px solid var(--primary-yellow);
+        }
+        
+        footer a {
+            color: var(--primary-yellow);
+            text-decoration: none;
+        }
+        
+        footer a:hover {
+            text-decoration: underline;
+        }
+        
+        .try-yourself {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f0f8ff;
+            border-radius: 8px;
+            border-left: 6px solid var(--primary-blue);
+        }
+        
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fade-in {
+            animation: fadeIn 0.5s ease forwards;
+            opacity: 0;
+        }
+        
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+        .delay-5 { animation-delay: 0.5s; }
+        
+        /* Skip to content link */
+        .skip-link {
+            position: absolute;
+            top: -40px;
+            left: 0;
+            background: var(--primary-yellow);
+            color: var(--primary-blue);
+            padding: 8px;
+            z-index: 100;
+            transition: top 0.3s;
+        }
+        
+        .skip-link:focus {
+            top: 0;
+            outline: var(--focus-outline);
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .card-container {
+                grid-template-columns: 1fr;
+            }
+            
+            header h1 {
+                font-size: 1.75rem;
+            }
+            
+            .card {
+                padding: 1.25rem;
+            }
+        }
+        
+        /* High Contrast Mode */
+        @media (prefers-contrast: more) {
+            :root {
+                --primary-blue: #002277;
+                --primary-yellow: #FFFF00;
+                --dark-text: #000000;
+                --light-text: #FFFFFF;
+                --focus-outline: 3px solid #FFFF00;
+            }
+            
+            .card, .intro {
+                border: 2px solid #000000;
+            }
+        }
+        
+        /* Reduced Motion */
+        @media (prefers-reduced-motion: reduce) {
+            * {
+                animation: none !important;
+                transition: none !important;
+            }
+            
+            .card:hover, .card:focus-within {
+                transform: none;
+            }
+        }
+
+        /* Practice area styles */
+        .practice-area {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .practice-example {
+            margin-top: 1rem;
+            border: 1px solid #ddd;
+            padding: 1rem;
+            border-radius: 4px;
+        }
+
+        .practice-example button,
+        .practice-example a {
+            margin: 0.5rem;
+        }
+        
+        /* Example of Button 2 styling to match the screenshot */
+        #btn2 {
+            background-color: white;
+            color: var(--dark-text);
+            border: 2px solid var(--primary-blue);
+            box-shadow: 0 0 0 2px var(--primary-yellow);
+        }
+        
+        #btn2:hover, #btn2:focus {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        
+        #btn2.active {
+            background-color: var(--primary-yellow);
+            color: var(--primary-blue);
+            font-weight: bold;
+            border: 2px solid var(--primary-blue);
+        }
+
+        .practice-example select,
+        .practice-example input {
+            margin: 0.5rem;
+            padding: 0.5rem;
+        }
+
+        .toggle-button {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            margin: 1rem 0;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <a href="#main-content" class="skip-link">Skip to main content</a>
+    
+    <header>
+        <h1>Digital Navigation Helper</h1>
+        <p>Easy tips to help everyone navigate the digital world</p>
+    </header>
+    
+    <main id="main-content" class="container">
+        <section class="intro animate-fade-in">
+            <h2>Welcome!</h2>
+            <p>Not everyone uses a mouse to get around websites and apps. Many people use the keyboard, screen readers, or other tools. This guide will help you understand how to navigate digital content in different ways.</p>
+            <p>Try these tips yourself and see how they make digital content more usable for everyone!</p>
+        </section>
+        
+        <div class="card-container">
+            <article class="card animate-fade-in delay-1">
+                <div class="card-icon">
+                    <i class="fas fa-keyboard" aria-hidden="true"></i>
+                </div>
+                <h2>Keyboard Navigation Basics</h2>
+                <p>The keyboard is a powerful tool for navigating digital content. Here are the key shortcuts:</p>
+                <ul class="tip-list">
+                    <li><strong>Tab:</strong> Move forward through elements you can interact with</li>
+                    <li><strong>Shift + Tab:</strong> Move backward</li>
+                    <li><strong>Enter:</strong> Activate links, buttons, and form fields</li>
+                    <li><strong>Spacebar:</strong> Activate buttons and checkboxes, scroll down</li>
+                    <li><strong>Arrow Keys:</strong> Navigate dropdowns, menus, and sliders</li>
+                    <li><strong>Esc:</strong> Close popups or dropdowns</li>
+                </ul>
+                <div class="try-yourself">
+                    <p>Challenge: Try to navigate a website without your mouse for 5 minutes!</p>
+                </div>
+            </article>
+            
+            <article class="card animate-fade-in delay-2">
+                <div class="card-icon">
+                    <i class="fas fa-eye" aria-hidden="true"></i>
+                </div>
+                <h2>Focus Indicators</h2>
+                <p>When using a keyboard to navigate, you need to see where you are on the page. A focus indicator is a highlight or outline that shows which element is currently selected.</p>
+                <p>Good focus indicators should:</p>
+                <ul class="tip-list">
+                    <li>Be easy to see against all backgrounds</li>
+                    <li>Have good color contrast</li>
+                    <li>Move in a logical order across the page</li>
+                </ul>
+                <div class="tip-demo">
+                    <p>Try tabbing through these elements to see focus indicators:</p>
+                    <button class="focus-indicator" tabindex="0">Button 1</button>
+                    <button class="focus-indicator" tabindex="0">Button 2</button>
+                    <button class="focus-indicator" tabindex="0">Button 3</button>
+                    <p><small>Press Tab to move between buttons and see the focus style</small></p>
+                </div>
+            </article>
+            
+            <article class="card animate-fade-in delay-3">
+                <div class="card-icon">
+                    <i class="fas fa-universal-access" aria-hidden="true"></i>
+                </div>
+                <h2>Screen Readers</h2>
+                <p>Screen readers are tools that read digital content out loud. Many people who are blind or have low vision use them.</p>
+                <p>To make content work well with screen readers:</p>
+                <ul class="tip-list">
+                    <li>Use proper headings (H1, H2, etc.) in order</li>
+                    <li>Add alt text to describe images</li>
+                    <li>Label all form fields clearly</li>
+                    <li>Use descriptive link text (avoid "click here")</li>
+                </ul>
+                <p>Screen readers often use keyboard shortcuts to navigate, making keyboard access even more important!</p>
+            </article>
+            
+            <article class="card animate-fade-in delay-4">
+                <div class="card-icon">
+                    <i class="fas fa-text-height" aria-hidden="true"></i>
+                </div>
+                <h2>Text Size & Contrast</h2>
+                <p>Many people adjust text size or use high contrast modes to read digital content better.</p>
+                <p>Good practices include:</p>
+                <ul class="tip-list">
+                    <li>Using relative text sizes (like em or rem units)</li>
+                    <li>Making sure text has good color contrast with its background</li>
+                    <li>Allowing zoom without breaking the layout</li>
+                    <li>Not using color alone to convey important information</li>
+                </ul>
+                <p>This page uses the blue and yellow color scheme with careful attention to contrast ratios.</p>
+            </article>
+            
+            <article class="card animate-fade-in delay-5">
+                <div class="card-icon">
+                    <i class="fas fa-mobile-alt" aria-hidden="true"></i>
+                </div>
+                <h2>Touch Navigation</h2>
+                <p>Many people use touchscreens rather than a mouse or keyboard.</p>
+                <p>For good touch navigation:</p>
+                <ul class="tip-list">
+                    <li>Make touch targets (buttons, links) at least 44 by 44 pixels</li>
+                    <li>Space interactive elements far enough apart</li>
+                    <li>Avoid interactions that rely on hovering</li>
+                    <li>Support both portrait and landscape orientation</li>
+                </ul>
+                <p>This page is designed to work well on mobile touchscreens too!</p>
+            </article>
+            
+            <article class="card animate-fade-in delay-1">
+                <div class="card-icon">
+                    <i class="fas fa-assistive-listening-systems" aria-hidden="true"></i>
+                </div>
+                <h2>Voice Control</h2>
+                <p>Some people navigate using voice commands instead of a keyboard or mouse.</p>
+                <p>To support voice control:</p>
+                <ul class="tip-list">
+                    <li>Give all interactive elements unique, descriptive names</li>
+                    <li>Avoid custom controls that don't work with standard voice commands</li>
+                    <li>Make sure all functionality is available through multiple methods</li>
+                </ul>
+                <p>Voice control users often say the visible text of buttons or links to activate them.</p>
+            </article>
+        </div>
+        
+        <section class="practice-area animate-fade-in">
+            <h2>Practice Area</h2>
+            <p>Here's a place to practice keyboard navigation. Try using the Tab key to move through these elements, and Enter or Space to activate them.</p>
+            
+            <div class="practice-example">
+                <h3>Navigation Example</h3>
+                <button id="btn1">Button 1</button>
+                <button id="btn2">Button 2</button>
+                <a href="#" id="link1" class="btn">Link Example</a>
+                <input type="text" placeholder="Text input" aria-label="Text input example">
+                <select aria-label="Example dropdown">
+                    <option>Option 1</option>
+                    <option>Option 2</option>
+                    <option>Option 3</option>
+                </select>
+                
+                <div id="result" style="margin-top: 1rem; padding: 0.5rem; background-color: #f5f5f5; border-radius: 4px; min-height: 1.5rem;">
+                    <!-- Results will appear here -->
+                </div>
+            </div>
+            
+            <button id="toggle-instructions" class="toggle-button">Show/Hide Quick Keyboard Guide</button>
+            <div id="instructions" style="display: none; margin-top: 1rem; padding: 1rem; background-color: #f8f8f8; border-radius: 4px;">
+                <h3>Quick Keyboard Guide</h3>
+                <ul>
+                    <li><strong>Tab:</strong> Move forward</li>
+                    <li><strong>Shift + Tab:</strong> Move backward</li>
+                    <li><strong>Enter:</strong> Activate links, buttons</li>
+                    <li><strong>Space:</strong> Activate buttons, checkboxes</li>
+                    <li><strong>Arrow keys:</strong> Navigate dropdowns</li>
+                    <li><strong>Esc:</strong> Close dialogs, menus</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+    
+    <footer>
+        <p>Created with accessibility in mind. <a href="https://github.com/Jerlyn/digital-navigation-helper" target="_blank" rel="noopener">View on GitHub</a></p>
+        <p>Feel free to contribute, share, and use these resources!</p>
+    </footer>
+    
+    <script>
+        // Animation timing
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add animation classes
+            const animatedElements = document.querySelectorAll('.animate-fade-in');
+            animatedElements.forEach(el => {
+                el.style.opacity = '1';
+            });
+        });
+        
+        // Practice area interaction
+        document.getElementById('btn1').addEventListener('click', function() {
+            // Reset active state on all buttons
+            resetActiveStates();
+            // Set this button as active
+            this.classList.add('active');
+            document.getElementById('result').textContent = 'Button 1 was clicked!';
+        });
+        
+        document.getElementById('btn2').addEventListener('click', function() {
+            // Reset active state on all buttons
+            resetActiveStates();
+            // Set this button as active
+            this.classList.add('active');
+            document.getElementById('result').textContent = 'Button 2 was clicked!';
+        });
+        
+        document.getElementById('link1').addEventListener('click', function(e) {
+            e.preventDefault();
+            // Reset active state on all buttons
+            resetActiveStates();
+            // Set this link as active
+            this.classList.add('active');
+            document.getElementById('result').textContent = 'Link was activated!';
+        });
+        
+        // Function to reset active states
+        function resetActiveStates() {
+            const elements = document.querySelectorAll('.practice-example button, .practice-example .btn');
+            elements.forEach(el => {
+                el.classList.remove('active');
+            });
+        }
+        
+        // Toggle instructions
+        document.getElementById('toggle-instructions').addEventListener('click', function() {
+            const instructions = document.getElementById('instructions');
+            if (instructions.style.display === 'none') {
+                instructions.style.display = 'block';
+            } else {
+                instructions.style.display = 'none';
+            }
+        });
+        
+        // Keyboard navigation demo for focus indicators
+        const focusIndicators = document.querySelectorAll('.focus-indicator');
+        focusIndicators.forEach(button => {
+            button.addEventListener('click', function() {
+                alert('Button activated: ' + this.textContent);
+            });
+            
+            button.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    this.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
