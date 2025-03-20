@@ -166,15 +166,24 @@
             background-color: white;
             color: var(--dark-text);
             transition: all 0.3s;
+            position: relative;
         }
         
-        .focus-indicator:focus {
+        /* Ensure ALL focus states have white text on blue background for proper contrast */
+        .focus-indicator:focus,
+        .focus-indicator:hover {
             outline: none;
-            background-color: white;
-            color: var(--primary-blue);
+            background-color: var(--primary-blue);
+            color: white; /* White text on blue background for proper contrast */
             border: 2px solid var(--primary-blue);
             box-shadow: 0 0 0 2px var(--primary-yellow);
-            font-weight: bold;
+        }
+        
+        /* Override any specific button styles to ensure color contrast */
+        .focus-demo-btn:focus,
+        .focus-demo-btn:hover {
+            background-color: var(--primary-blue) !important;
+            color: white !important;
         }
         
         footer {
@@ -386,9 +395,9 @@
                 </ul>
                 <div class="tip-demo">
                     <p>Try tabbing through these elements to see focus indicators:</p>
-                    <button class="focus-indicator" tabindex="0">Button 1</button>
-                    <button class="focus-indicator" tabindex="0">Button 2</button>
-                    <button class="focus-indicator" tabindex="0">Button 3</button>
+                    <button class="focus-indicator focus-demo-btn" tabindex="0">Button 1</button>
+                    <button class="focus-indicator focus-demo-btn" tabindex="0">Button 2</button>
+                    <button class="focus-indicator focus-demo-btn" tabindex="0">Button 3</button>
                     <p><small>Press Tab to move between buttons and see the focus style</small></p>
                 </div>
             </article>
@@ -553,7 +562,7 @@
         });
         
         // Keyboard navigation demo for focus indicators
-        const focusIndicators = document.querySelectorAll('.focus-indicator');
+        const focusIndicators = document.querySelectorAll('.focus-demo-btn');
         focusIndicators.forEach(button => {
             button.addEventListener('click', function() {
                 alert('Button activated: ' + this.textContent);
